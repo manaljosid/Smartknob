@@ -1,0 +1,42 @@
+Added Component: Designator=U600(SOT-25-5)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Texas Instruments"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "SN74LV1T34DBVR"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "SOT-25-5"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "SN74LV1T34DBVR"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "296-37176-1-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "Logic"; VariantName = "[No Variations]"
+Add Pin To Net: Unknown Pin: Pin J100-1
+Add Pin To Net: Unknown Pin: Pin J100-2
+Add Pin To Net: Unknown Pin: Pin J100-3
+Add Pin To Net: Unknown Pin: Pin J101-1
+Add Pin To Net: Unknown Pin: Pin J101-2
+Add Pin To Net: Unknown Pin: Pin J101-3
+Add Pin To Net: Unknown Pin: Pin J101-4
+Add Pin To Net: Unknown Pin: Pin J101-5
+Add Pin To Net: Unknown Pin: Pin J101-6
+Add Pin To Net: Unknown Pin: Pin J101-7
+Add Pin To Net: Unknown Pin: Pin J101-8
+Add Pin To Net: Unknown Pin: Pin SW200-1
+Add Pin To Net: Unknown Pin: Pin SW200-2
+Add Pin To Net: Unknown Pin: Pin SW201-1
+Add Pin To Net: Unknown Pin: Pin SW201-2
+Added Pin To Net: NetName=NetU201_8 Pin=U600-2
+Added Pin To Net: NetName=GND Pin=U600-3
+Added Pin To Net: NetName=NetD600_1 Pin=U600-4
+Added Pin To Net: NetName=+5V_USB Pin=U600-5
+Add Class Member: Failed to add class member : Component J100 Conn-3pos
+Add Class Member: Failed to add class member : Component J101 Conn-8pos
+Added Member To Class: ClassName=Main Member=Component R? RES
+Add Class Member: Failed to add class member : Component SW200 Pushbutton
+Add Class Member: Failed to add class member : Component SW201 Pushbutton
+Added Member To Class: ClassName=RGB_LEDs Member=Component U600 SN74LV1T34
+Added Room: Name=Magnetic_encoder
+Added Room: Name=Main
+Added Room: Name=Microcontroller
+Added Room: Name=Motor_driver
+Added Room: Name=RGB_LEDs
+Added Room: Name=Strain_sensor
