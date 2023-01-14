@@ -1,0 +1,8 @@
+Added Component: Designator=M1(M1.6_Close_Unplated)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "M1.6_Close_Unplated"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "M1.6_Close_Unplated"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Specification"; Value = "Close clearance"; VariantName = "[No Variations]"
+Added Member To Class: ClassName=Main Member=Component M1 Mounting_Hole_Unplated
