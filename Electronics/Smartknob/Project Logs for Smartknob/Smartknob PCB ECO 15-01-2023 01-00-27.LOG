@@ -1,0 +1,61 @@
+Added Component: Designator=C300(C0603)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "TDK Corporation"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "CGA3E2X7R1H104K080AA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "C0603"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "CGA3E2X7R1H104K080AA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Specification"; Value = "X7R, 50V, AEC-Q200 Qualified"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "445-5666-1-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "100nF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "50V"; VariantName = "[No Variations]"
+Added Component: Designator=R303(R0603)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vishay Dale"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "CRCW060310K0JNEA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "R0603"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "CRCW060310K0JNEA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Specification"; Value = "5%, 200ppm, 0.1W, AEC-Q200 Qualified"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "541-10KGCT-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10K"; VariantName = "[No Variations]"
+Added Component: Designator=R304(R0603)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vishay Dale"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "CRCW060310K0JNEA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "R0603"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "CRCW060310K0JNEA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Specification"; Value = "5%, 200ppm, 0.1W, AEC-Q200 Qualified"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "541-10KGCT-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10K"; VariantName = "[No Variations]"
+Added Component: Designator=R305(R0603)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Vishay Dale"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "CRCW060310K0JNEA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "R0603"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "CRCW060310K0JNEA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Specification"; Value = "5%, 200ppm, 0.1W, AEC-Q200 Qualified"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "541-10KGCT-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10K"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=+5V_USB Pin=C300-1
+Added Pin To Net: NetName=GND Pin=C300-2
+Added Pin To Net: NetName=GND Pin=R303-1
+Added Pin To Net: NetName=NetR303_2 Pin=R303-2
+Added Pin To Net: NetName=GND Pin=R304-1
+Added Pin To Net: NetName=NetR304_2 Pin=R304-2
+Added Pin To Net: NetName=GND Pin=R305-1
+Added Pin To Net: NetName=NetR305_2 Pin=R305-2
+Added Member To Class: ClassName=Motor_driver Member=Component C300 CAP
+Added Member To Class: ClassName=Motor_driver Member=Component R303 RES
+Added Member To Class: ClassName=Motor_driver Member=Component R304 RES
+Added Member To Class: ClassName=Motor_driver Member=Component R305 RES

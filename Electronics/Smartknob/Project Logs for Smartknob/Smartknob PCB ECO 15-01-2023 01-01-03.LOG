@@ -1,0 +1,48 @@
+Added Component: Designator=C301(C0603)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "TDK Corporation"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "CGA3E2X7R1H104K080AA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "C0603"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "CGA3E2X7R1H104K080AA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Specification"; Value = "X7R, 50V, AEC-Q200 Qualified"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "445-5666-1-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "100nF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "50V"; VariantName = "[No Variations]"
+Added Component: Designator=C302(C0805)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "TDK Corporation"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "CGA4J1X7S1C106K125AC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "C0805"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "CGA4J1X7S1C106K125AC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Specification"; Value = "X7S, 16V, AEC-Q200 Qualified"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "445-16110-1-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10uF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "16V"; VariantName = "[No Variations]"
+Added Component: Designator=C303(C0805)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "TDK Corporation"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "CGA4J1X7S1C106K125AC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "C0805"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "CGA4J1X7S1C106K125AC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Specification"; Value = "X7S, 16V, AEC-Q200 Qualified"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "445-16110-1-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10uF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "16V"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=+5V_USB Pin=C301-1
+Added Pin To Net: NetName=GND Pin=C301-2
+Added Pin To Net: NetName=+5V_USB Pin=C302-1
+Added Pin To Net: NetName=GND Pin=C302-2
+Added Pin To Net: NetName=+5V_USB Pin=C303-1
+Added Pin To Net: NetName=GND Pin=C303-2
+Added Member To Class: ClassName=Motor_driver Member=Component C301 CAP
+Added Member To Class: ClassName=Motor_driver Member=Component C302 CAP
+Added Member To Class: ClassName=Motor_driver Member=Component C303 CAP
