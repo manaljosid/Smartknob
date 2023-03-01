@@ -1,0 +1,21 @@
+Output: Gerber Files
+Type  : Gerber
+From  : Variant [[No Variations]] of Project [Smartknob.PrjPcb]
+   Generated File[Smartknob.GTO]
+   Generated File[Smartknob.GTP]
+   Generated File[Smartknob.GTS]
+   Generated File[Smartknob.GTL]
+   Generated File[Smartknob.G1]
+   Generated File[Smartknob.G2]
+   Generated File[Smartknob.GBL]
+   Generated File[Smartknob.GBS]
+   Generated File[Smartknob.GBP]
+   Generated File[Smartknob.GBO]
+   Generated File[Smartknob.GM3]
+   Generated File[Smartknob.GM]
+
+
+Files Generated   : 12
+Documents Printed : 0
+
+Finished Output Generation At 14:09:29 On 28/02/2023

@@ -1,0 +1,16 @@
+Added Component: Designator=J101(2mm_pads_8)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "2mm_pads_8"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "2mm_pads_8"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "2mm_pads_8"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "n"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=+3V3 Pin=J101-1
+Added Pin To Net: NetName=GND Pin=J101-2
+Added Pin To Net: NetName=NetJ101_3 Pin=J101-3
+Added Pin To Net: NetName=NetJ101_4 Pin=J101-4
+Added Pin To Net: NetName=NetJ101_5 Pin=J101-5
+Added Pin To Net: NetName=NetJ101_6 Pin=J101-6
+Added Pin To Net: NetName=NetJ101_7 Pin=J101-7
+Added Pin To Net: NetName=NetJ101_8 Pin=J101-8
+Added Member To Class: ClassName=Main Member=Component J101 Conn-8pos

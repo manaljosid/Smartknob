@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=GND Pin=C300-2
+Removed Pin From Net: NetName=+5V_USB Pin=U300-2
+Added Pin To Net: NetName=+3V3 Pin=C400-1
+Added Pin To Net: NetName=+3V3 Pin=U400-1
+Added Pin To Net: NetName=+3V3 Pin=U400-2
+Added Pin To Net: NetName=NetC300_2 Pin=C300-2
+Added Pin To Net: NetName=NetC300_2 Pin=U300-2
+Added Net: Name=NetC300_2

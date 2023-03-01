@@ -1,0 +1,21 @@
+Added Component: Designator=J200(DX07S016JA1R1500)
+Add component (AddParameter): Name = "Fitted"; Value = "Fitted"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Generic"; Value = "Non Generic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "JAE Electronics"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part No"; Value = "DX07S016JA1R1500"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Ref"; Value = "DX07S016JA1R1500"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Reference"; Value = "DX07S016JA1R1500"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ready for use"; Value = "y"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "Digi-Key"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part No"; Value = "670-DX07S016JA1R1500CT-ND"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=J200-1
+Added Pin To Net: NetName=NetF200_1 Pin=J200-2
+Added Pin To Net: NetName=NetJ200_3 Pin=J200-3
+Added Pin To Net: NetName=NetJ200_5 Pin=J200-5
+Added Pin To Net: NetName=NetJ200_6 Pin=J200-6
+Added Pin To Net: NetName=NetJ200_6 Pin=J200-7
+Added Pin To Net: NetName=NetJ200_5 Pin=J200-8
+Added Pin To Net: NetName=NetJ200_9 Pin=J200-9
+Added Pin To Net: NetName=NetF200_1 Pin=J200-11
+Added Pin To Net: NetName=GND Pin=J200-12
+Added Member To Class: ClassName=Microcontroller Member=Component J200 DX07S016JA1R1500

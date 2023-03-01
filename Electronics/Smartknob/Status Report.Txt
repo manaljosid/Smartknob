@@ -1,14 +1,13 @@
-Project Outputs Generation Report
----------------------------------
-Start Output Generation At 13:44:43 On 16/01/2023
+Output: NC Drill Files
+Type  : NC Drill
+From  : PCB Document [Smartknob.PcbDoc]
+   Generated File[Smartknob-RoundHoles.TXT]
+   Generated File[Smartknob-SlotHoles.TXT]
+   Generated File[Smartknob.LDP]
+   Generated File[Smartknob.DRR]
 
-Output: Bill of Materials
-Type  : BOM
-From  : Project [Smartknob.PrjPcb]
-   Generated File[Bill of Materials-Smartknob.xlsx]
 
-
-Files Generated   : 1
+Files Generated   : 4
 Documents Printed : 0
 
-Finished Output Generation At 13:45:23 On 16/01/2023
+Finished Output Generation At 19:44:57 On 01/03/2023

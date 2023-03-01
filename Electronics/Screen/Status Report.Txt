@@ -1,14 +1,19 @@
-Project Outputs Generation Report
----------------------------------
-Start Output Generation At 13:48:22 On 16/01/2023
+Output: Gerber Files
+Type  : Gerber
+From  : PCB Document [Screen.PcbDoc]
+   Generated File[Screen.GTO]
+   Generated File[Screen.GTP]
+   Generated File[Screen.GTS]
+   Generated File[Screen.GTL]
+   Generated File[Screen.GBL]
+   Generated File[Screen.GBS]
+   Generated File[Screen.GBP]
+   Generated File[Screen.GBO]
+   Generated File[Screen.GM3]
+   Generated File[Screen.GM]
 
-Output: Bill of Materials
-Type  : BOM
-From  : Project [Screen.PrjPcb]
-   Generated File[Bill of Materials-Screen.xlsx]
 
-
-Files Generated   : 1
+Files Generated   : 10
 Documents Printed : 0
 
-Finished Output Generation At 13:48:25 On 16/01/2023
+Finished Output Generation At 19:48:49 On 01/03/2023

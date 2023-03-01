@@ -1,0 +1,21 @@
+----------------------------------------------------------------------------------------------------------------------------------
+NCDrill File Report For: Smartknob.PcbDoc   01/03/2023  19:44:57
+----------------------------------------------------------------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : Smartknob-RoundHoles.TXT
+ASCII SlotHoles File : Smartknob-SlotHoles.TXT
+
+Tool       Hole Size               Hole Tolerance               Hole Type       Hole Count   Plated         Tool Travel
+----------------------------------------------------------------------------------------------------------------------------------
+T1      16mil (0.399mm)                                           Round             133       PTH        25.99inch (660.09mm)
+T2      26mil (0.65mm)                                            Slot              4         PTH        1.45inch (36.94mm)
+T3      43mil (1.1mm)                                             Round             3         PTH        0.20inch (5.08mm)
+T4      25mil (0.63mm)                                            Round             2         NPTH       0.24inch (6.00mm)
+T5      67mil (1.699mm)                                           Round             3         NPTH       1.40inch (35.51mm)
+T6      87mil (2.2mm)                                             Round             2         NPTH       2.76inch (70.00mm)
+T7      94mil (2.4mm)                                             Round             4         NPTH       5.66inch (143.89mm)
+----------------------------------------------------------------------------------------------------------------------------------
+Totals                                                                              151
+
+Total Processing Time (hh:mm:ss) : 00:00:00
