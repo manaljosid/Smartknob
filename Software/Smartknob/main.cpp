@@ -13,13 +13,11 @@
 #include "pico/stdlib.h"
 #include <hardware/i2c.h>
 #include <SCD30.h>
+#include <MT6701.h>
+#include "pin_assignments.h"
 
 // Defines
-#define I2C_BAUD_RATE (400*1000) // Set i2c speed at 400 kHz
-
-// Pinouts
-#define I2C_SDA_PIN 6
-#define I2C_SCL_PIN 7
+#define I2C_BAUD_RATE (100*1000) // Set i2c speed at 100 kHz
 
 // Constructors
 SCD30 scd30(i2c1);
@@ -33,8 +31,8 @@ struct SCDData {
 
 void init() {
     stdio_init_all();
-    gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
+    gpio_set_function(GPIO_1, GPIO_FUNC_I2C);
+    gpio_set_function(GPIO_2, GPIO_FUNC_I2C);
     i2c_init(i2c1, I2C_BAUD_RATE);
     sleep_ms(1000);
     if(!scd30.init()) {
