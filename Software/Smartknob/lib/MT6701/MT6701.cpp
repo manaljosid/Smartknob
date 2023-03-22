@@ -7,6 +7,7 @@
  */
 
 #include <hardware/spi.h>
+#include <hardware/gpio.h>
 #include "MT6701.h"
 
 static uint8_t crc6(const uint8_t *data);
@@ -20,9 +21,17 @@ MT6701::MT6701(spi_inst_t* spi, uint csn_pin) {
     angle = 0.0f;
 }
 
-// TODO: Add spi_is_readable to check if we can actually read?
+/**
+ * @brief Initialize the MT6701 sensor
+ * @return True if successful, false if not
+*/
+bool MT6701::init(void) {
+    gpio_init(_csn_pin);
+    gpio_pull_up(_csn_pin);
+    gpio_put(_csn_pin, true);
+}
+
 // TODO: Verify the bit shift actually works
-// TODO: Add CSn asserts
 /**
  * @brief Read angle and status bits from sensor
  * @return Error type derived from status bits and CRC
@@ -33,9 +42,12 @@ mt6701_err_t MT6701::read(void) {
     spi_set_baudrate(_spi, 15000000u); // set baudrate to 15 MHz
 
     uint8_t buffer[3];
+    gpio_put(_csn_pin, false);
     if(spi_read_blocking(_spi, 0x00, buffer, 3) != 3) {
+        gpio_put(_csn_pin, true);
         return mt6701_err_t::FAILED_OTHER;
     }
+    gpio_put(_csn_pin, true);
 
     // To understand what's about to happen here just read the datasheet
     // This may seem like a mess but I challenge you to propose a better solution
@@ -94,8 +106,8 @@ static uint8_t tableCRC6[64] = {
 /**
  * @brief Calculate CRC6 checksum, takes in 3 bytes of data
  * @param *data
- *        Pointer to data to calculate checksum for
- * @return Checksum "byte"
+ *        Pointer to data to calculate checksum for, 3 bytes long
+ * @return Checksum byte containing 6 bit checksum aligned to LSB
  */
 static uint8_t crc6(const uint8_t* data) {
     uint32_t w_InputData = 0;

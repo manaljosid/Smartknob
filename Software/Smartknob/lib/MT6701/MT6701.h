@@ -10,7 +10,6 @@
  - Check correct CPOL and CPHA setting
  - Verify if it is actually SPI or if it's a different SSI mode
  - Verify correctness of bitshift and status bit checking
- - 
 */
 
 #pragma once
@@ -29,6 +28,7 @@ enum class mt6701_err_t {
 class MT6701 {
 public:
     MT6701(spi_inst_t* spi, uint csn_pin);
+    bool init(void);
     mt6701_err_t read(void);
 
     /**
