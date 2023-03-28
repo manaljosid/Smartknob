@@ -27,6 +27,7 @@ MT6701::MT6701(spi_inst_t* spi, uint csn_pin) {
 */
 bool MT6701::init(void) {
     gpio_init(_csn_pin);
+    gpio_set_dir(_csn_pin, GPIO_OUT);
     gpio_pull_up(_csn_pin);
     gpio_put(_csn_pin, true);
 }
@@ -34,9 +35,11 @@ bool MT6701::init(void) {
 // TODO: Verify the bit shift actually works
 /**
  * @brief Read angle and status bits from sensor
+ * @param angle
+ *          Pointer to a float in which the angle value in degrees will be placed
  * @return Error type derived from status bits and CRC
  */
-mt6701_err_t MT6701::read(void) {
+mt6701_err_t MT6701::read(float* angle) {
     // Get old baudrate to be respectful of other devices on the bus
     uint old_baudrate = spi_get_baudrate(_spi);
     spi_set_baudrate(_spi, 15000000u); // set baudrate to 15 MHz
@@ -80,11 +83,11 @@ mt6701_err_t MT6701::read(void) {
     raw_angle = raw_angle & 0xFFFC; // Mask out the two lsb
     raw_angle >>= 2;
 
-    angle = raw_angle/16384.0 * 360.0;
+    *angle = raw_angle/16384.0 * 360.0;
 
     // Set baudrate to old baudrate again
     if(spi_set_baudrate(_spi, old_baudrate) != old_baudrate) {
-        mt6701_err_t::FAILED_OTHER;
+        return mt6701_err_t::FAILED_OTHER;
     }
     return mt6701_err_t::OK;
 }
@@ -105,7 +108,7 @@ static uint8_t tableCRC6[64] = {
 
 /**
  * @brief Calculate CRC6 checksum, takes in 3 bytes of data
- * @param *data
+ * @param data
  *        Pointer to data to calculate checksum for, 3 bytes long
  * @return Checksum byte containing 6 bit checksum aligned to LSB
  */

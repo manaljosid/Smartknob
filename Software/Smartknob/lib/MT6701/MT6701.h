@@ -29,12 +29,7 @@ class MT6701 {
 public:
     MT6701(spi_inst_t* spi, uint csn_pin);
     bool init(void);
-    mt6701_err_t read(void);
-
-    /**
-     * @brief Contains angle in degrees
-    */
-    float angle;
+    mt6701_err_t read(float* angle);
 private:
     spi_inst_t* _spi;
     uint _csn_pin;
