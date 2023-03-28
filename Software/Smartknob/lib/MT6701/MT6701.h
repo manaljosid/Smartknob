@@ -28,7 +28,7 @@ enum class mt6701_err_t {
 class MT6701 {
 public:
     MT6701(spi_inst_t* spi, uint csn_pin);
-    bool init(void);
+    void init(void);
     mt6701_err_t read(float* angle);
 private:
     spi_inst_t* _spi;

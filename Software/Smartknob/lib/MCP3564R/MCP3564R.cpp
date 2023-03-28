@@ -25,7 +25,7 @@ MCP3564R::MCP3564R(spi_inst_t* spi, uint csn_pin, uint8_t addr) {
  * @brief Initialize the MCP3564R
  * @return True if successful, false if not
 */
-bool MCP3564R::init(void) {
+void MCP3564R::init(void) {
     gpio_init(_csn_pin);
     gpio_set_dir(_csn_pin, GPIO_OUT);
     gpio_pull_up(_csn_pin);

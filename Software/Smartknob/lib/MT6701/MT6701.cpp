@@ -18,14 +18,13 @@ static uint8_t crc6(const uint8_t *data);
 MT6701::MT6701(spi_inst_t* spi, uint csn_pin) {
     _spi = spi;
     _csn_pin = csn_pin;
-    angle = 0.0f;
 }
 
 /**
  * @brief Initialize the MT6701 sensor
  * @return True if successful, false if not
 */
-bool MT6701::init(void) {
+void MT6701::init(void) {
     gpio_init(_csn_pin);
     gpio_set_dir(_csn_pin, GPIO_OUT);
     gpio_pull_up(_csn_pin);

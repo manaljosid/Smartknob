@@ -17,7 +17,7 @@
 class MCP3564R {
 public:
     MCP3564R(spi_inst_t* spi, uint csn_pin, uint8_t addr = 0x1);
-    bool init(void);
+    void init(void);
 
     bool read_data(void);
 
