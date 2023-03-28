@@ -11,45 +11,36 @@
 #include <string.h>
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include <hardware/i2c.h>
+#include <hardware/spi.h>
 #include <SCD30.h>
 #include <MT6701.h>
+#include <MCP3564R.h>
 #include "pin_assignments.h"
 
 // Defines
-#define I2C_BAUD_RATE (100*1000) // Set i2c speed at 100 kHz
 
 // Constructors
-SCD30 scd30(i2c1);
+MT6701 mt6701(spi1, MAG_CSN);
+MCP3564R mcp3564r(spi1, STRAIN_CSN);
 
 // Variables and data structures
-struct SCDData {
-    float CO2;
-    float temperature;
-    float humidity;
-} SCDData;
+float angle = 0.0f;
 
 void init() {
     stdio_init_all();
-    gpio_set_function(GPIO_1, GPIO_FUNC_I2C);
-    gpio_set_function(GPIO_2, GPIO_FUNC_I2C);
-    i2c_init(i2c1, I2C_BAUD_RATE);
+    gpio_set_function(MAG_MISO, GPIO_FUNC_SPI);
+    gpio_set_function(MAG_CLK, GPIO_FUNC_SPI);
+    gpio_set_function(STRAIN_CLK, GPIO_FUNC_SPI);
+    gpio_set_function(STRAIN_MISO, GPIO_FUNC_SPI);
+    gpio_set_function(STRAIN_MOSI, GPIO_FUNC_SPI);
+    mt6701.init();
+    mcp3564r.init();
     sleep_ms(1000);
-    if(!scd30.init()) {
-        while(true) {
-            printf("Did not initialize SCD30!\n");
-            sleep_ms(1000);
-        }
-    }
 }
 
 void loop() {
-    if(scd30.dataReady()) {
-        scd30.read();
-        printf("CO2:      %f ppm\n", scd30.CO2);
-        printf("Temp:     %f °C\n", scd30.temperature);
-        printf("Humidity: %f %%\n\n", scd30.relative_humidity);
-    }
+    mt6701.read(&angle);
+    printf("Angle: %f degrees\n", angle);
     sleep_ms(1000);
 }
 

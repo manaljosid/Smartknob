@@ -19,6 +19,8 @@ public:
     MCP3564R(spi_inst_t* spi, uint csn_pin, uint8_t addr = 0x1);
     bool init(void);
 
+    bool read_data(void);
+
     bool select_vref_source(bool internal);
     bool set_clock_source(uint8_t source);
     bool set_current_source_sink(uint8_t config);
@@ -38,8 +40,20 @@ public:
     bool set_en_crccom(bool enabled);
     bool set_en_offcal(bool enabled);
     bool set_en_gaincal(bool enabled);
+
+    bool enable_scan_channel(uint8_t channel);
+    bool disable_scan_channel(uint8_t channel);
+    bool set_scan_delay_multiplier(uint8_t multiplier);
+
+    bool lock_write_access(void);
+    bool unlock_write_access(void);
 private:
     spi_inst_t* _spi;
     uint _csn_pin;
     uint8_t _addr;
+    uint8_t data_format = 0;
+    bool locked = false;
+
+    bool read_register(uint8_t address, uint8_t* data, uint8_t len);
+    bool write_register(uint8_t address, uint8_t* data, uint8_t len);
 };

@@ -9,6 +9,11 @@
 #pragma once
 
 /**
+ * @brief The unlock code to write to registers
+*/
+const uint8_t LOCK_CODE = (0xA5);
+
+/**
  * @brief Register map of the MCP3564R
 */
 namespace MCP3564R_REG {
@@ -293,9 +298,9 @@ namespace MCP3564R_SCAN_REG {
     const uint16_t SINGLE_CH_6  = (0x0040);
     const uint16_t SINGLE_CH_7  = (0x0080);
     const uint16_t DIFF_CH_A    = (0x0100);
-    const uint16_t DIFF_CH_A    = (0x0200);
-    const uint16_t DIFF_CH_A    = (0x0400);
-    const uint16_t DIFF_CH_A    = (0x0800);
+    const uint16_t DIFF_CH_B    = (0x0200);
+    const uint16_t DIFF_CH_C    = (0x0400);
+    const uint16_t DIFF_CH_D    = (0x0800);
     const uint16_t TEMP         = (0x1000);
     const uint16_t AVDD         = (0x2000);
     const uint16_t VCM          = (0x4000);
