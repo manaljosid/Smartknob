@@ -6,12 +6,6 @@
  *  Author: Mani Magnusson
  */
 
-/* TODO: 
- - Check correct CPOL and CPHA setting
- - Verify if it is actually SPI or if it's a different SSI mode
- - Verify correctness of bitshift and status bit checking
-*/
-
 #pragma once
 #include <hardware/spi.h>
 

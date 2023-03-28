@@ -6,8 +6,10 @@
  *  Author: Mani Magnusson
  */
 
+#include <string.h>
 #include <hardware/spi.h>
 #include <hardware/gpio.h>
+#include <stdio.h>
 #include "MT6701.h"
 
 static uint8_t crc6(const uint8_t *data);
@@ -31,7 +33,7 @@ void MT6701::init(void) {
     gpio_put(_csn_pin, true);
 }
 
-// TODO: Verify the bit shift actually works
+
 /**
  * @brief Read angle and status bits from sensor
  * @param angle
@@ -42,36 +44,43 @@ mt6701_err_t MT6701::read(float* angle) {
     // Get old baudrate to be respectful of other devices on the bus
     uint old_baudrate = spi_get_baudrate(_spi);
     spi_set_baudrate(_spi, 15000000u); // set baudrate to 15 MHz
+    spi_set_format(_spi, 8, SPI_CPOL_0, SPI_CPHA_1, SPI_MSB_FIRST);
 
     uint8_t buffer[3];
     gpio_put(_csn_pin, false);
     if(spi_read_blocking(_spi, 0x00, buffer, 3) != 3) {
         gpio_put(_csn_pin, true);
+        spi_set_format(_spi, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
         return mt6701_err_t::FAILED_OTHER;
     }
+    
     gpio_put(_csn_pin, true);
+    spi_set_format(_spi, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
 
     // To understand what's about to happen here just read the datasheet
     // This may seem like a mess but I challenge you to propose a better solution
-
+    mt6701_err_t error = mt6701_err_t::OK;
     uint8_t crc = 0;
-    crc |= buffer[3] & 0x3F; // Mask out the two msb
-    if(crc6(buffer) != crc) return mt6701_err_t::FAILED_CRC;
+    crc |= buffer[2] & 0x3F; // Mask out the two msb
+    if(crc6(buffer) != crc) {
+        printf("Expected %#x, got %#x\n", crc6(buffer), crc);
+        return mt6701_err_t::FAILED_CRC;
+    }
 
     // Time to check some status bits!
-    if((buffer[1] & 0x01)) return mt6701_err_t::LOSS_OF_TRACK;
+    if((buffer[1] & 0x01)) error = mt6701_err_t::LOSS_OF_TRACK;
     switch (buffer[2] & 0xC0) {
         case 0x00:
             // Nothing to see here, carry on
             break;
-        case 0x01:
-            return mt6701_err_t::FIELD_TOO_STRONG;
+        case 0x40:
+            error = mt6701_err_t::FIELD_TOO_STRONG;
             break;
-        case 0x02:
-            return mt6701_err_t::FIELD_TOO_WEAK;
+        case 0x80:
+            error = mt6701_err_t::FIELD_TOO_WEAK;
             break;
         default:
-            return mt6701_err_t::FAILED_OTHER;
+            error = mt6701_err_t::FAILED_OTHER;
             break;
     }
 
@@ -81,14 +90,13 @@ mt6701_err_t MT6701::read(float* angle) {
     raw_angle |= buffer[1];
     raw_angle = raw_angle & 0xFFFC; // Mask out the two lsb
     raw_angle >>= 2;
-
     *angle = raw_angle/16384.0 * 360.0;
 
     // Set baudrate to old baudrate again
     if(spi_set_baudrate(_spi, old_baudrate) != old_baudrate) {
-        return mt6701_err_t::FAILED_OTHER;
+        error = mt6701_err_t::FAILED_OTHER;
     }
-    return mt6701_err_t::OK;
+    return error;
 }
 
 /**
@@ -118,6 +126,8 @@ static uint8_t crc6(const uint8_t* data) {
     w_InputData |= data[1];
     w_InputData <<= 8;
     w_InputData |= data[2];
+    w_InputData &= 0x00FFFFC0;
+    w_InputData >>= 6;
     uint8_t b_Index = 0;
     uint8_t b_CRC = 0;
 
