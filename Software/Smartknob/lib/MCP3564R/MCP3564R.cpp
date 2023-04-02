@@ -727,6 +727,62 @@ bool MCP3564R::read_register(uint8_t address, uint8_t* data, uint8_t len) {
 }
 
 /**
+ * @brief Read data from register
+ * @param address
+ *          Register address
+ * @param data
+ *          Pointer to data buffer
+ * @param len
+ *          Length of data buffer
+ * @param status_byte
+ *          Pointer to buffer to return status bits
+ * @return True if successful, false if not
+*/
+bool MCP3564R::read_register(uint8_t address, uint8_t* data, uint8_t len, uint8_t* status_byte) {
+    uint old_baudrate = spi_get_baudrate(_spi);
+    spi_set_baudrate(_spi, 10000000u);
+    uint8_t header = 0x00;
+    header |= (_addr & 0x03) << 6;
+    header |= (address & 0x07) << 2;
+    header |= 0x03;
+    
+    gpio_put(_csn_pin, false);
+    if(spi_write_read_blocking(_spi, &header, status_byte, 1) != 1) {
+        gpio_put(_csn_pin, true);
+        return false;
+    }
+
+    // Need to make it wait to set data at register? See page 74 of datasheet
+    //asm volatile("nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop");
+    sleep_us(1);
+    for(int i = 0; i < len; i++) {
+        spi_read_blocking(_spi, 0x00, data+i, 1);
+    }
+    //if(spi_read_blocking(_spi, 0x00, data, len) != len) {
+    //    gpio_put(_csn_pin, true);
+    //    return false;
+    //}    
+    gpio_put(_csn_pin, true);
+
+    if(spi_set_baudrate(_spi, old_baudrate) != old_baudrate) {
+        return false;
+    }
+
+    const char *bit_rep[16] = {
+        [ 0] = "0000", [ 1] = "0001", [ 2] = "0010", [ 3] = "0011",
+        [ 4] = "0100", [ 5] = "0101", [ 6] = "0110", [ 7] = "0111",
+        [ 8] = "1000", [ 9] = "1001", [10] = "1010", [11] = "1011",
+        [12] = "1100", [13] = "1101", [14] = "1110", [15] = "1111",
+    };
+    printf("Read    data: ");
+    for(int i = 0; i < len; i++) {
+        printf("%s%s ", bit_rep[*(data+i) >> 4], bit_rep[*(data+i) & 0x0F]);
+    }
+    printf("\n");
+    return true;
+}
+
+/**
  * @brief Write data to register
  * @param address
  *          Register address

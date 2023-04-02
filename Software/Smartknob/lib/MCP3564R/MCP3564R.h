@@ -58,5 +58,6 @@ private:
     bool locked = false;
 
     bool read_register(uint8_t address, uint8_t* data, uint8_t len);
+    bool read_register(uint8_t address, uint8_t* data, uint8_t len, uint8_t* status_byte);
     bool write_register(uint8_t address, uint8_t* data, uint8_t len);
 };

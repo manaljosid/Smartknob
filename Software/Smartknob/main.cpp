@@ -41,23 +41,26 @@ void init() {
     //mt6701.init();
     spi_set_format(spi1, 8, spi_cpol_t::SPI_CPOL_0, spi_cpha_t::SPI_CPHA_0, spi_order_t::SPI_MSB_FIRST);
     mcp3564r.init();
+    mcp3564r.set_clock_source(3);
+    sleep_us(100);
+    mcp3564r.select_vref_source(true);
     sleep_us(10);
-    mcp3564r.set_clock_source(2);
-    sleep_us(10);
-    mcp3564r.set_oversample_ratio(5);
-    sleep_us(10);
-    mcp3564r.set_adc_gain(5);
-    sleep_us(10);
-    mcp3564r.set_data_format(3);
-    sleep_us(10);
+    //mcp3564r.set_oversample_ratio(5);
+    //sleep_us(10);
+    //mcp3564r.set_adc_gain(5);
+    //sleep_us(10);
+    //mcp3564r.set_data_format(3);
+    //sleep_us(10);
+    //mcp3564r.enable_scan_channel(8);
+    //sleep_us(10);
     mcp3564r.set_conv_mode(3);
     sleep_us(10);
-    mcp3564r.enable_scan_channel(8);
-    sleep_us(10);
     mcp3564r.set_adc_mode(3);
+    sleep_us(100);
     printf("Finished initializing.\n");
-    printf("DEBUG:\n");
-    mcp3564r.debug();
+    //printf("DEBUG:\n");
+    //sleep_us(10);
+    //mcp3564r.debug();
 }
 
 void loop() {
@@ -84,8 +87,8 @@ void loop() {
     */
     //mt6701.read(&angle);
     //printf("Angle: %f degrees\n", angle);
-    //mcp3564r.read_data(&measurement, &channel);
-    //printf("CH: %d, data: %d\n", channel, measurement);
+    mcp3564r.read_data(&measurement, &channel);
+    printf("CH: %d, data: %d\n", channel, measurement);
     sleep_ms(1000);
 }
 
