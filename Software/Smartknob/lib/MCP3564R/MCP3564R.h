@@ -19,7 +19,7 @@ public:
     MCP3564R(spi_inst_t* spi, uint csn_pin, uint8_t addr = 0x1);
     void init(void);
 
-    bool read_data(void);
+    bool read_data(int32_t* data, uint8_t* channel);
 
     bool select_vref_source(bool internal);
     bool set_clock_source(uint8_t source);
@@ -32,7 +32,7 @@ public:
     bool set_adc_bias_current(uint8_t selection);
     bool set_adc_gain(uint8_t gain);
     bool set_auto_zero_mux(bool enable);
-    bool set_auto_zero_ref(bool internal);
+    bool set_auto_zero_ref_buffer(bool enabled);
 
     bool set_conv_mode(uint8_t mode);
     bool set_data_format(uint8_t format);
@@ -47,6 +47,9 @@ public:
 
     bool lock_write_access(void);
     bool unlock_write_access(void);
+
+    void debug(void);
+    //bool quick_setup(void);
 private:
     spi_inst_t* _spi;
     uint _csn_pin;

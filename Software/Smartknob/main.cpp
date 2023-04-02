@@ -21,35 +21,44 @@
 
 // Constructors
 MT6701 mt6701(spi1, MAG_CSN);
-//MCP3564R mcp3564r(spi1, STRAIN_CSN);
+MCP3564R mcp3564r(spi1, STRAIN_CSN);
 
 // Variables and data structures
 float angle = 0.0f;
+uint8_t channel = 0;
+int32_t measurement = 0;
 
 void init() {
     stdio_init_all();
-    sleep_ms(500);
+    sleep_ms(2000);
     printf("\n////////////////////\nWelcome to the Smartknob test ground, warning: bugs ahead\nNow initializing...\n");
-    spi_init(spi1, 15000000u);
-    gpio_set_function(MAG_MISO, GPIO_FUNC_SPI);
-    gpio_set_function(MAG_CLK, GPIO_FUNC_SPI);
-    //gpio_set_function(STRAIN_CLK, GPIO_FUNC_SPI);
-    //gpio_set_function(STRAIN_MISO, GPIO_FUNC_SPI);
-    //gpio_set_function(STRAIN_MOSI, GPIO_FUNC_SPI);
-    mt6701.init();
-    //mcp3564r.init();
-    sleep_ms(5000);
+    spi_init(spi1, 10000000u);
+    //gpio_set_function(MAG_MISO, GPIO_FUNC_SPI);
+    //gpio_set_function(MAG_CLK, GPIO_FUNC_SPI);
+    gpio_set_function(STRAIN_CLK, GPIO_FUNC_SPI);
+    gpio_set_function(STRAIN_MISO, GPIO_FUNC_SPI);
+    gpio_set_function(STRAIN_MOSI, GPIO_FUNC_SPI);
+    //mt6701.init();
+    spi_set_format(spi1, 8, spi_cpol_t::SPI_CPOL_0, spi_cpha_t::SPI_CPHA_0, spi_order_t::SPI_MSB_FIRST);
+    mcp3564r.init();
+    sleep_us(10);
+    mcp3564r.set_clock_source(2);
+    sleep_us(10);
+    mcp3564r.set_oversample_ratio(5);
+    sleep_us(10);
+    mcp3564r.set_adc_gain(5);
+    sleep_us(10);
+    mcp3564r.set_data_format(3);
+    sleep_us(10);
+    mcp3564r.set_conv_mode(3);
+    sleep_us(10);
+    mcp3564r.enable_scan_channel(8);
+    sleep_us(10);
+    mcp3564r.set_adc_mode(3);
     printf("Finished initializing.\n");
+    printf("DEBUG:\n");
+    mcp3564r.debug();
 }
-
-/*
-OK = 0,
-FIELD_TOO_STRONG,
-FIELD_TOO_WEAK,
-LOSS_OF_TRACK,
-FAILED_CRC,
-FAILED_OTHER
-*/
 
 void loop() {
     /*
@@ -73,14 +82,15 @@ void loop() {
             break;
     }
     */
-    mt6701.read(&angle);
-    printf("Angle: %f degrees\n\n", angle);
-    sleep_ms(10);
+    //mt6701.read(&angle);
+    //printf("Angle: %f degrees\n", angle);
+    //mcp3564r.read_data(&measurement, &channel);
+    //printf("CH: %d, data: %d\n", channel, measurement);
+    sleep_ms(1000);
 }
 
 int main() {
     init();
-    printf("\n\n\nWasgoinon\n\n\n");
     while(1) {
         loop();
     }
