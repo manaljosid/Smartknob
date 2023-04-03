@@ -1,5 +1,5 @@
 # Smartknob
-A smartknob clone based on the original project found at https://github.com/scottbez1/smartknob.
+A smartknob clone based on the [original project](https://github.com/scottbez1/smartknob) from Scott Bezek.
 
 A couple changes are implemented including:
 - Change of microcontroller from ESP32 to RP2040
@@ -22,13 +22,15 @@ This repository is under heavy development. No guarantee is made that anything i
 ### Schematic and PCB design
 The designs are made with the latest version of Altium Designer and as such the software along with a valid license is required.
 
-In addition to Altium Designer the component library used for all of my projects needs to be installed. It can be found at https://github.com/manaljosid/Moonlight_Library.
+In addition to Altium Designer the component library used for all of my projects needs to be installed. It can be found on this [github page](https://github.com/manaljosid/Moonlight_Library).
 
 ### Mechanical design
 The mechanical design is not available at the moment other than the STL files used to 3D print. I plan to add it here in the future.
 
 ### Software development
 In addition to pulling this repository you need to fetch all required submodules. Those include the actual pico-sdk and its submodules. Make sure the submodules are all installed, if the submodules of the pico-sdk are not installed then no USB function other than the boot ROM will work.
+
+Due to bugs in the current release of the pico-sdk (mainly that the clock configuration is hard coded) a development branch is used.
 
 ## Contributing
 To contribute to this project I ask you to either add an issue (make sure to check your issue does not exist before adding a new one) or make a fork of the repository and then issue a pull request with your changes.
