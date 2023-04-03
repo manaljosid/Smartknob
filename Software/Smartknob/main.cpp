@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include <hardware/spi.h>
-#include <SCD30.h>
 #include <MT6701.h>
 #include <MCP3564R.h>
 #include <FOC.h>
