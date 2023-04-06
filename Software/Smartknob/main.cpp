@@ -30,66 +30,46 @@ int32_t measurement = 0;
 
 void init() {
     stdio_init_all();
-    sleep_ms(2000);
-    printf("\n////////////////////\nWelcome to the Smartknob test ground, warning: bugs ahead\nNow initializing...\n");
+    sleep_ms(1);
     spi_init(spi1, 10000000u);
-    //gpio_set_function(MAG_MISO, GPIO_FUNC_SPI);
-    //gpio_set_function(MAG_CLK, GPIO_FUNC_SPI);
+    gpio_set_function(MAG_MISO, GPIO_FUNC_SPI);
+    gpio_set_function(MAG_CLK, GPIO_FUNC_SPI);
     gpio_set_function(STRAIN_CLK, GPIO_FUNC_SPI);
     gpio_set_function(STRAIN_MISO, GPIO_FUNC_SPI);
     gpio_set_function(STRAIN_MOSI, GPIO_FUNC_SPI);
-    //mt6701.init();
+    gpio_init(STRAIN_IRQ);
+    gpio_set_dir(STRAIN_IRQ, GPIO_IN);
+    gpio_pull_up(STRAIN_IRQ); // Required for MCP3564R to work!
+    mt6701.init();
     spi_set_format(spi1, 8, spi_cpol_t::SPI_CPOL_0, spi_cpha_t::SPI_CPHA_0, spi_order_t::SPI_MSB_FIRST);
     mcp3564r.init();
     mcp3564r.set_clock_source(3);
     sleep_us(100);
-    mcp3564r.select_vref_source(true);
+    mcp3564r.set_irq_mode_hiz(false);
     sleep_us(10);
-    //mcp3564r.set_oversample_ratio(5);
-    //sleep_us(10);
-    //mcp3564r.set_adc_gain(5);
-    //sleep_us(10);
-    //mcp3564r.set_data_format(3);
-    //sleep_us(10);
-    //mcp3564r.enable_scan_channel(8);
-    //sleep_us(10);
+    mcp3564r.select_vref_source(false);
+    sleep_us(10);
+    mcp3564r.set_data_format(3);
+    sleep_us(10);
+    mcp3564r.enable_scan_channel(8);
+    sleep_us(10);
+    mcp3564r.set_adc_gain(5);
+    sleep_us(10);
+    mcp3564r.set_oversample_ratio(6);
+    sleep_us(10);
     mcp3564r.set_conv_mode(3);
     sleep_us(10);
     mcp3564r.set_adc_mode(3);
     sleep_us(100);
-    printf("Finished initializing.\n");
-    //printf("DEBUG:\n");
-    //sleep_us(10);
-    //mcp3564r.debug();
+    printf("Finished initializing.\n\n");
 }
 
 void loop() {
-    /*
-    switch(mt6701.read(&angle)) {
-        case mt6701_err_t::OK:
-            break;
-        case mt6701_err_t::FIELD_TOO_STRONG:
-            printf("Field too strong!\n");
-            break;
-        case mt6701_err_t::FIELD_TOO_WEAK:
-            printf("Field too weak!\n");
-            break;
-        case mt6701_err_t::LOSS_OF_TRACK:
-            printf("Loss of track!\n");
-            break;
-        case mt6701_err_t::FAILED_CRC:
-            printf("Failed CRC!\n");
-            break;
-        default:
-            printf("Failed other!\n");
-            break;
-    }
-    */
-    //mt6701.read(&angle);
-    //printf("Angle: %f degrees\n", angle);
+    mt6701.read(&angle);
+    printf("Angle: %f degrees\n", angle);
     mcp3564r.read_data(&measurement, &channel);
-    printf("CH: %d, data: %d\n", channel, measurement);
-    sleep_ms(1000);
+    printf("ADC data: %d\n", measurement);
+    sleep_ms(10);
 }
 
 int main() {

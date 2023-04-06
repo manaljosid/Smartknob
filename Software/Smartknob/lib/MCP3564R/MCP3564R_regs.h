@@ -214,7 +214,8 @@ namespace MCP3564R_IRQ_REG_MASK {
     const uint8_t DR_STATUS     = (0x40);
     const uint8_t CRCCFG_STATUS = (0x20);
     const uint8_t POR_STATUS    = (0x10);
-    const uint8_t IRQ_MODE      = (0x0C);
+    const uint8_t IRQ_MODE_1    = (0x08);
+    const uint8_t IRQ_MODE_0    = (0x04);
     const uint8_t EN_FASTCMD    = (0x02);
     const uint8_t EN_STP        = (0x01);
 };
@@ -232,7 +233,7 @@ namespace MCP3564R_IRQ_REG {
     const uint8_t IRQ_MODE_HI_Z     = (0x00);
     const uint8_t IRQ_MODE_HIGH     = (0x04);
     const uint8_t IRQ_MODE_IRQ_OUT  = (0x00);
-    const uint8_t IEQ_MODE_MDAT_OUT = (0x08);
+    const uint8_t IRQ_MODE_MDAT_OUT = (0x08);
 };
 
 /**

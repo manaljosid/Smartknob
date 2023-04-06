@@ -41,6 +41,9 @@ public:
     bool set_en_offcal(bool enabled);
     bool set_en_gaincal(bool enabled);
 
+    bool set_irq_mode_mdat(bool mdat);
+    bool set_irq_mode_hiz(bool hiz);
+
     bool enable_scan_channel(uint8_t channel);
     bool disable_scan_channel(uint8_t channel);
     bool set_scan_delay_multiplier(uint8_t multiplier);

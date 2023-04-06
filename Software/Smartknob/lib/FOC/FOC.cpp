@@ -25,12 +25,13 @@ FOC::FOC() {
  * @return True if successful, false if not
 */
 void FOC::init(void) {
-    gpio_init(_csn_pin);
-    gpio_set_dir(_csn_pin, GPIO_OUT);
-    gpio_pull_up(_csn_pin);
-    gpio_put(_csn_pin, true);
+    //gpio_init(_csn_pin);
+    //gpio_set_dir(_csn_pin, GPIO_OUT);
+    //gpio_pull_up(_csn_pin);
+    //gpio_put(_csn_pin, true);
 }
 
 uint32_t FOC::get_clock_speed(void) {
     //
+    return 0;
 }

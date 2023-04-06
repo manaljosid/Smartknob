@@ -34,3 +34,6 @@ Due to bugs in the current release of the pico-sdk (mainly that the clock config
 
 ## Contributing
 To contribute to this project I ask you to either add an issue (make sure to check your issue does not exist before adding a new one) or make a fork of the repository and then issue a pull request with your changes.
+
+## Things to watch out for
+The MCP3564R *NEEDS* a pull-up on the IRQ line when it is in high-z mode. It can be weak - about 100 kOhm will do but if it is not there the ADCDATA register will never contain any data. In this case it is solved using a pull-up on the RP2040s GPIO pin that's connected to the IRQ line.

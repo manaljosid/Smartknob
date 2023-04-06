@@ -59,7 +59,7 @@ bool MCP3564R::read_data(int32_t* data, uint8_t* channel) {
     int32_t temp = 0x00000000;
     switch(data_format) {
         case 0:
-            output_data = ((buffer[0] & 0x80) == 1) ? 0x80000000 : 0x00000000;
+            output_data = ((buffer[0] & 0x80) == 1) ? 0xFF800000 : 0x00000000;
             temp |= buffer[0];
             temp <<= 8;
             temp |= buffer[1];
@@ -68,7 +68,7 @@ bool MCP3564R::read_data(int32_t* data, uint8_t* channel) {
             output_data |= temp;
             break;
         case 1:
-            output_data = ((buffer[0] & 0x80) == 1) ? 0x80000000 : 0x00000000;
+            output_data = ((buffer[0] & 0x80) == 1) ? 0xFF800000 : 0x00000000;
             temp |= buffer[0];
             temp <<= 8;
             temp |= buffer[1];
@@ -77,7 +77,7 @@ bool MCP3564R::read_data(int32_t* data, uint8_t* channel) {
             output_data |= temp;
             break;
         case 2:
-            output_data = ((buffer[0]) == 0xFF) ? 0x80000000 : 0x00000000;
+            output_data = ((buffer[0]) == 0xFF) ? 0xFF000000 : 0x00000000;
             temp |= buffer[1];
             temp <<= 8;
             temp |= buffer[2];
@@ -86,7 +86,8 @@ bool MCP3564R::read_data(int32_t* data, uint8_t* channel) {
             output_data |= temp;
             break;
         case 3:
-            output_data = ((buffer[0] & 0x0F) == 0x0F) ? 0x80000000 : 0x00000000;
+            output_data = (buffer[0] & 0x08) ? 0xFF000000 : 0x00000000;
+            temp <<= 8;
             temp |= buffer[1];
             temp <<= 8;
             temp |= buffer[2];
@@ -515,6 +516,42 @@ bool MCP3564R::set_en_gaincal(bool enabled) {
 }
 
 /**
+ * @brief Set IRQ output mode to MDAT or IRQ
+ * @param mdat
+ *          True: MDAT enabled, false: IRQ enabled
+ * @return True if successful, false if not
+*/
+bool MCP3564R::set_irq_mode_mdat(bool mdat) {
+    uint8_t buffer[1];
+    if(!read_register(MCP3564R_REG::IRQ, buffer, 1)) return false;
+    if(mdat) {
+        buffer[0] |= MCP3564R_IRQ_REG::IRQ_MODE_MDAT_OUT;
+    } else {
+        buffer[0] &= ~MCP3564R_IRQ_REG_MASK::IRQ_MODE_1;
+    }
+    if(!write_register(MCP3564R_REG::IRQ, buffer, 1)) return false;
+    return true;
+}
+
+/**
+ * @brief Set IRQ output mode to high-z or logic high
+ * @param hiz
+ *          True: High-z, false: Logic High
+ * @return True if successful, false if not
+*/
+bool MCP3564R::set_irq_mode_hiz(bool hiz) {
+    uint8_t buffer[1];
+    if(!read_register(MCP3564R_REG::IRQ, buffer, 1)) return false;
+    if(hiz) {
+        buffer[0] &= ~MCP3564R_IRQ_REG_MASK::IRQ_MODE_0;
+    } else {
+        buffer[0] |= MCP3564R_IRQ_REG::IRQ_MODE_HIGH;
+    }
+    if(!write_register(MCP3564R_REG::IRQ, buffer, 1)) return false;
+    return true;
+}
+
+/**
  * @brief Enable a channel to be scanned
  * @param channel
  *          Single ended channels 0-7 are 0-7, differential channels A to D are 8-11, 12 is temperature, 13 is A_VDD, 14 is V_CM and 15 is OFFSET
@@ -647,27 +684,276 @@ bool MCP3564R::unlock_write_access(void) {
 }
 
 /**
- * @brief Used for debugging purposes
+ * @brief Used for debugging purposes - dumps the entire register map
 */
 void MCP3564R::debug(void) {
-    printf("Setting timer register...\n");
-    uint8_t writebuf[3] = {0x09, 0x89, 0x68};
-    write_register(MCP3564R_REG::TIMER, writebuf, 3);
-    sleep_us(100);
-    printf("Reading timer register...\n");
-    uint8_t buffer[3];
-    read_register(MCP3564R_REG::TIMER, buffer, 3);
-    printf("Timer register raw data: ");
-    const char *bit_rep[16] = {
-        [ 0] = "0000", [ 1] = "0001", [ 2] = "0010", [ 3] = "0011",
-        [ 4] = "0100", [ 5] = "0101", [ 6] = "0110", [ 7] = "0111",
-        [ 8] = "1000", [ 9] = "1001", [10] = "1010", [11] = "1011",
-        [12] = "1100", [13] = "1101", [14] = "1110", [15] = "1111",
-    };
-    for(int i = 0; i < 3; i++) {
-        printf("%s%s ", bit_rep[buffer[i] >> 4], bit_rep[buffer[i] & 0x0F]);
+    printf("\n DEBUG: Dumping full register...\n");
+    uint8_t buf[31] = {0x00};
+
+    uint old_baudrate = spi_get_baudrate(_spi);
+    spi_set_baudrate(_spi, 1000000u);
+    uint8_t header = 0x00;
+    header |= (_addr & 0x03) << 6;
+    header |= (0x00 & 0x07) << 2;
+    header |= 0x03;
+
+    gpio_put(_csn_pin, false);
+
+    spi_write_blocking(_spi, &header, 1);
+    
+    sleep_us(10);
+    spi_read_blocking(_spi, 0x00, buf, sizeof(buf));
+    
+    gpio_put(_csn_pin, true);
+
+    spi_set_baudrate(_spi, old_baudrate);
+
+    // counter to use since ADCDATA is variable length
+    uint8_t n = 0;
+
+    printf("ADCDATA Register:\n");
+    switch(data_format) {
+        case 0:
+            printf("    SGN + DATA - 0x%X%X%X\n", buf[0], buf[1], buf[2]);
+            n = 3;
+            break;
+        case 1:
+            printf("    SGN + DATA - 0x%X%X%X\n", buf[0], buf[1], buf[2]);
+            printf("    Zero fill - 0x%X\n", buf[3]);
+            n = 4;
+            break;
+        case 2:
+            printf("    SGN - 0x%X\n", buf[0]);
+            printf("    DATA - 0x%X%X%X\n", buf[1], buf[2], buf[3]);
+            n = 4;
+        case 3:
+            printf("    CH_ID - %d\n", buf[0] & 0xF0);
+            printf("    SGN - 0x%X\n", buf[0] & 0x0F);
+            printf("    DATA - 0x%X%X%X\n", buf[1], buf[2], buf[3]);
+            n = 4;
     }
-    printf("\n");
+    printf("CONFIG0 Register:\n");
+    printf("    VREF_SEL - ");
+    if (buf[n] & 0x80) {printf("Internal\n");} else {printf("External\n");}
+    printf("    CONFIG - ");
+    if (buf[n] & 0x40) {printf("Normal\n");} else {printf("Partial Shutdown\n");}
+    printf("    CLK_SEL - ");
+    switch(buf[n] & 0x30) {
+        case 0x00: printf("Default\n"); break;
+        case 0x10: printf("External\n"); break;
+        case 0x20: printf("Internal no output\n"); break;
+        case 0x30: printf("Internal with output\n"); break;
+    }
+    printf("    CS_SEL - ");
+    switch(buf[n] & 0x0C) {
+        case 0x00: printf("No current source\n"); break;
+        case 0x04: printf("0.9 uA applied\n"); break;
+        case 0x08: printf("3.7 uA applied\n"); break;
+        case 0x0C: printf("15 uA applied\n"); break;
+    }
+    printf("    ADC_MODE - ");
+    switch(buf[n] & 0x03) {
+        case 0x00: printf("ADC shutdown (default)\n"); break;
+        case 0x01: printf("ADC shutdown mode\n"); break;
+        case 0x02: printf("ADC standby mode\n"); break;
+        case 0x03: printf("ADC conversion mode\n"); break;
+    }
+    printf("CONFIG1 Register:\n");
+    printf("    PRE - ");
+    switch(buf[n+1] & 0xC0) {
+        case 0x00: printf("AMCLK = MCLK\n"); break;
+        case 0x40: printf("AMCLK = MCLK/2\n"); break;
+        case 0x80: printf("AMCLK = MCLK/4\n"); break;
+        case 0xC0: printf("AMCLK = MCLK/8\n"); break;
+    }
+    printf("    OSR - ");
+    switch(buf[n+1] & 0x3C) {
+        case 0x00:  printf("32\n"); break;
+        case 0x04:  printf("64\n"); break;
+        case 0x08:  printf("128\n"); break;
+        case 0x0C:  printf("256\n"); break;
+        case 0x10:  printf("512\n"); break;
+        case 0x14:  printf("1024\n"); break;
+        case 0x18:  printf("2048\n"); break;
+        case 0x1C:  printf("4096\n"); break;
+        case 0x20:  printf("8192\n"); break;
+        case 0x24:  printf("16384\n"); break;
+        case 0x28: printf("20480\n"); break;
+        case 0x2C: printf("24576\n"); break;
+        case 0x30: printf("40960\n"); break;
+        case 0x34: printf("49152\n"); break;
+        case 0x38: printf("81920\n"); break;
+        case 0x3C: printf("98304\n"); break;
+    }
+    printf("    RESERVED (should be 0x00) - 0x%X\n", buf[n+1] & 0x03);
+    printf("CONFIG2 Register:\n");
+    printf("    BOOST - ");
+    switch(buf[n+2] & 0xC0) {
+        case 0x00: printf("ADC channel current x 0.5\n"); break;
+        case 0x40: printf("ADC channel current x 0.66\n"); break;
+        case 0x80: printf("ADC channel current x 1\n"); break;
+        case 0xC0: printf("ADC channel current x 2\n"); break;
+    }
+    printf("    GAIN - ");
+    switch(buf[n+2] & 0x38) {
+        case 0x00: printf(" x 1/3\n"); break;
+        case 0x08: printf(" x 1\n"); break;
+        case 0x10: printf(" x 2\n"); break;
+        case 0x18: printf(" x 4\n"); break;
+        case 0x20: printf(" x 8\n"); break;
+        case 0x28: printf(" x 16\n"); break;
+        case 0x30: printf(" x 32\n"); break;
+        case 0x38: printf(" x 64\n"); break;
+    }
+    printf("    AZ_MUX - ");
+    if(buf[n+2] & 0x04) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    AZ_REF - ");
+    if(buf[n+2] & 0x02) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    RESERVED (should be 1) - ");
+    if(buf[n+2] & 0x01) {printf("Correct\n");} else {printf("Incorrect\n");}
+    printf("CONFIG3 Register:\n");
+    printf("    CONV_MODE - ");
+    switch(buf[n+3] & 0xC0) {
+        case 0x00: printf("One shot shutdown\n"); break;
+        case 0x40: printf("One shot shutdown\n"); break;
+        case 0x80: printf("One shot standby\n"); break;
+        case 0xC0: printf("Continuous\n"); break;
+    }
+    printf("    DATA_FORMAT - ");
+    switch(buf[n+3] & 0x30) {
+        case 0x00: printf("24 bit\n"); break;
+        case 0x10: printf("32 bit trailing zeros\n"); break;
+        case 0x20: printf("32 bit leading sign\n"); break;
+        case 0x30: printf("32 bit with channel ID\n"); break;
+    }
+    printf("    CRC_FORMAT - ");
+    if(buf[n+3] & 0x08) {printf("32 bit\n");} else {printf("16 bit\n");}
+    printf("    EN_CRCCOM - ");
+    if(buf[n+3] & 0x04) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    EN_OFFCAL - ");
+    if(buf[n+3] & 0x02) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    EN_GAINCAL - ");
+    if(buf[n+3] & 0x01) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("IRQ Register:\n");
+    printf("    Unimplemented (read as 0) - ");
+    if(buf[n+4] & 0x80) {printf("Incorrect\n");} else {printf("Correct\n");}
+    printf("    DR_STATUSn - ");
+    if(buf[n+4] & 0x40) {printf("No update\n");} else {printf("New data\n");}
+    printf("    CRCCFG_STATUSn - ");
+    if(buf[n+4] & 0x20) {printf("No error\n");} else {printf("CRC error\n");}
+    printf("    POR_STATUSn - ");
+    if(buf[n+4] & 0x10) {printf("No POR detected\n");} else {printf("POR detected\n");}
+    printf("    IRQ_MODE (IRQ/MDAT SELECT) - ");
+    if(buf[n+4] & 0x08) {printf("MDAT selected\n");} else {printf("IRQ selected\n");}
+    printf("    IRQ_MODE (IRQ Pin Inactive State Select) - ");
+    if(buf[n+4] & 0x04) {printf("Logic High\n");} else {printf("High-Z\n");}
+    printf("    EN_FASTCMD - ");
+    if(buf[n+4] & 0x02) {printf("Fast commands enabled\n");} else {printf("Fast commands disabled\n");}
+    printf("    EN_STP (Conversion Start Interrupt Output) - ");
+    if(buf[n+4] & 0x01) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("MUX Register:\n");
+    printf("    MUX_VIN+ - %d\n", buf[n+5] & 0xF0);
+    printf("    MUX_VIN- - %d\n", buf[n+5] & 0xF0);
+    printf("SCAN Register:\n");
+    printf("    DLY - ");
+    switch (buf[n+6] & 0xE0) {
+        case 0x00: printf("No delay\n"); break;
+        case 0x20: printf("8x DMCLK\n"); break;
+        case 0x40: printf("16x DMCLK\n"); break;
+        case 0x60: printf("32x DMCLK\n"); break;
+        case 0x80: printf("64x DMCLK\n"); break;
+        case 0xA0: printf("128x DMCLK\n"); break;
+        case 0xC0: printf("256x DMCLK\n"); break;
+        case 0xE0: printf("512x DMCLK\n"); break;
+    }
+    printf("    RESERVED (Should be zero) - %d\n", buf[n+6] & 0x10);
+    printf("    Unimplemented (Should be zero) - %d\n", buf[n+6] & 0x0F);
+    printf("    OFFSET - ");
+    if(buf[n+7] & 0x80) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    VCM - ");
+    if(buf[n+7] & 0x40) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    AVDD - ");
+    if(buf[n+7] & 0x20) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    TEMP - ");
+    if(buf[n+7] & 0x10) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    DIFF_D - ");
+    if(buf[n+7] & 0x08) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    DIFF_C - ");
+    if(buf[n+7] & 0x04) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    DIFF_B - ");
+    if(buf[n+7] & 0x02) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    DIFF_A - ");
+    if(buf[n+7] & 0x01) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    SE_7 - ");
+    if(buf[n+8] & 0x80) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    SE_6 - ");
+    if(buf[n+8] & 0x04) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    SE_5 - ");
+    if(buf[n+8] & 0x02) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    SE_4 - ");
+    if(buf[n+8] & 0x01) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    SE_3 - ");
+    if(buf[n+8] & 0x08) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    SE_2 - ");
+    if(buf[n+8] & 0x04) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    SE_1 - ");
+    if(buf[n+8] & 0x02) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("    SE_0 - ");
+    if(buf[n+8] & 0x01) {printf("Enabled\n");} else {printf("Disabled\n");}
+    printf("TIMER Register:\n");
+    uint32_t temp = 0;
+    temp |= buf[n+9];
+    temp <<= 8;
+    temp |= buf[n+10];
+    temp <<= 8;
+    temp |= buf[n+11];
+    temp <<= 8;
+    printf("    TIMER - %d x DMCLK periods\n", temp);
+    printf("OFFSETCAL Register:\n");
+    temp = 0;
+    temp |= buf[n+12];
+    temp <<= 8;
+    temp |= buf[n+13];
+    temp <<= 8;
+    temp |= buf[n+14];
+    temp <<= 8;
+    printf("    OFFCAL - 0x%X\n", temp);
+    printf("GAINCAL Register:\n");
+    temp = 0;
+    temp |= buf[n+15];
+    temp <<= 8;
+    temp |= buf[n+16];
+    temp <<= 8;
+    temp |= buf[n+17];
+    temp <<= 8;
+    printf("    GAINCAL (default 0x800000) - 0x%X\n", temp);
+    printf("RESERVED Register:\n");
+    temp = 0;
+    temp |= buf[n+18];
+    temp <<= 8;
+    temp |= buf[n+19];
+    temp <<= 8;
+    temp |= buf[n+20];
+    temp <<= 8;
+    printf("    RESERVED (should be 0x900000) - 0x%X\n", temp);
+    printf("RESERVED Register:\n");
+    printf("    RESERVED (should be 0x30) - 0x%X\n", buf[n+21]);
+    printf("LOCK Register:\n");
+    printf("    LOCK (unlocked at 0xA5) - 0x%X\n", buf[n+22]);
+    printf("RESERVED Register:\n");
+    temp = 0;
+    temp |= buf[n+23];
+    temp <<= 8;
+    temp |= buf[n+24];
+    temp <<= 8;
+    printf("    RESERVED (MCP3564R should be 0x000F) - 0x%X\n", temp);
+    printf("CRCCFG Register:\n");
+    temp = 0;
+    temp |= buf[n+25];
+    temp <<= 8;
+    temp |= buf[n+26];
+    temp <<= 8;
+    printf("    CRCCFG (CRC-16 checksum) - 0x%X\n", temp);
 }
 
 /******************************* PRIVATE METHODS *******************************/
@@ -697,32 +983,16 @@ bool MCP3564R::read_register(uint8_t address, uint8_t* data, uint8_t len) {
     }
 
     // Need to make it wait to set data at register? See page 74 of datasheet
-    //asm volatile("nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop");
     sleep_us(1);
-    for(int i = 0; i < len; i++) {
-        spi_read_blocking(_spi, 0x00, data+i, 1);
-    }
-    //if(spi_read_blocking(_spi, 0x00, data, len) != len) {
-    //    gpio_put(_csn_pin, true);
-    //    return false;
-    //}    
+    if(spi_read_blocking(_spi, 0x00, data, len) != len) {
+        gpio_put(_csn_pin, true);
+        return false;
+    }    
     gpio_put(_csn_pin, true);
 
     if(spi_set_baudrate(_spi, old_baudrate) != old_baudrate) {
         return false;
     }
-
-    const char *bit_rep[16] = {
-        [ 0] = "0000", [ 1] = "0001", [ 2] = "0010", [ 3] = "0011",
-        [ 4] = "0100", [ 5] = "0101", [ 6] = "0110", [ 7] = "0111",
-        [ 8] = "1000", [ 9] = "1001", [10] = "1010", [11] = "1011",
-        [12] = "1100", [13] = "1101", [14] = "1110", [15] = "1111",
-    };
-    printf("Read    data: ");
-    for(int i = 0; i < len; i++) {
-        printf("%s%s ", bit_rep[*(data+i) >> 4], bit_rep[*(data+i) & 0x0F]);
-    }
-    printf("\n");
     return true;
 }
 
@@ -753,33 +1023,17 @@ bool MCP3564R::read_register(uint8_t address, uint8_t* data, uint8_t len, uint8_
     }
 
     // Need to make it wait to set data at register? See page 74 of datasheet
-    //asm volatile("nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop");
     sleep_us(1);
-    for(int i = 0; i < len; i++) {
-        spi_read_blocking(_spi, 0x00, data+i, 1);
-    }
-    //if(spi_read_blocking(_spi, 0x00, data, len) != len) {
-    //    gpio_put(_csn_pin, true);
-    //    return false;
-    //}    
+    if(spi_read_blocking(_spi, 0x00, data, len) != len) {
+        gpio_put(_csn_pin, true);
+        return false;
+    }    
     gpio_put(_csn_pin, true);
 
     if(spi_set_baudrate(_spi, old_baudrate) != old_baudrate) {
         return false;
     }
-
-    const char *bit_rep[16] = {
-        [ 0] = "0000", [ 1] = "0001", [ 2] = "0010", [ 3] = "0011",
-        [ 4] = "0100", [ 5] = "0101", [ 6] = "0110", [ 7] = "0111",
-        [ 8] = "1000", [ 9] = "1001", [10] = "1010", [11] = "1011",
-        [12] = "1100", [13] = "1101", [14] = "1110", [15] = "1111",
-    };
-    printf("Read    data: ");
-    for(int i = 0; i < len; i++) {
-        printf("%s%s ", bit_rep[*(data+i) >> 4], bit_rep[*(data+i) & 0x0F]);
-    }
-    printf("\n");
-    return true;
+   return true;
 }
 
 /**
@@ -806,7 +1060,7 @@ bool MCP3564R::write_register(uint8_t address, uint8_t* data, uint8_t len) {
         return false;
     }
     // Need to make it wait to set data at register? See page 74 of datasheet
-    asm volatile("nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop \n nop");
+    sleep_us(1);
     if(spi_write_blocking(_spi, data, len) != len) {
         gpio_put(_csn_pin, true);
         return false;
@@ -816,16 +1070,5 @@ bool MCP3564R::write_register(uint8_t address, uint8_t* data, uint8_t len) {
     if(spi_set_baudrate(_spi, old_baudrate) != old_baudrate) {
         return false;
     }
-    printf("Written data: ");
-    const char *bit_rep[16] = {
-        [ 0] = "0000", [ 1] = "0001", [ 2] = "0010", [ 3] = "0011",
-        [ 4] = "0100", [ 5] = "0101", [ 6] = "0110", [ 7] = "0111",
-        [ 8] = "1000", [ 9] = "1001", [10] = "1010", [11] = "1011",
-        [12] = "1100", [13] = "1101", [14] = "1110", [15] = "1111",
-    };
-    for(int i = 0; i < len; i++) {
-        printf("%s%s ", bit_rep[*(data+i) >> 4], bit_rep[*(data+i) & 0x0F]);
-    }
-    printf("\n");
     return true;
 }
