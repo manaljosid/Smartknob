@@ -14,6 +14,7 @@
 #include <hardware/spi.h>
 #include <MT6701.h>
 #include <MCP3564R.h>
+#include <FOC.h>
 #include "pin_assignments.h"
 
 // Defines
