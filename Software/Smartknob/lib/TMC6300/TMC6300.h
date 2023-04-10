@@ -1,7 +1,7 @@
 /*
- *  Title: MCP3564R
+ *  Title: TMC6300 Library
 
- *  Description: Reads data from and sends commands to the MCP3564R ADC
+ *  Description: Library for the TMC6300, sends voltages to a BLDC motors coils
  * 
  *  Author: Mani Magnusson
  */
@@ -15,14 +15,30 @@
  - Add everything
 */
 
-class FOC {
+class TMC6300 {
 public:
-    FOC();
-    void init(void);
-
-    bool update(void);
+    TMC6300(uint u_h, uint v_h, uint w_h, uint u_l, uint v_l, uint w_l, float supply_voltage);
+    void init(long frequency, float dead_zone);
+    void set_enabled(bool enabled);
+    void set_voltages(float v_u, float v_v, float v_w);
 private:
-    uint slice_num = 0;
+    struct gpio_pins {
+        uint u_h;
+        uint v_h;
+        uint w_h;
+        uint u_l;
+        uint v_l;
+        uint w_l;
+    } _gpio_pins;
+    
+    uint16_t wrapvalue = 0;
+    uint slices[6];
+    uint channels[6];
+    bool _enabled = false;
 
-    uint32_t get_clock_speed(void);
+    float _dead_zone = 0.02f;
+    float _supply_voltage = 0.0f;
+
+    void sync_slices(void);
+    void write_duty_cycle(float dc_u, float dc_v, float dc_w);
 };

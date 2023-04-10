@@ -970,7 +970,7 @@ void MCP3564R::debug(void) {
 */
 bool MCP3564R::read_register(uint8_t address, uint8_t* data, uint8_t len) {
     uint old_baudrate = spi_get_baudrate(_spi);
-    spi_set_baudrate(_spi, 10000000u);
+    spi_set_baudrate(_spi, 1000000u);
     uint8_t header = 0x00;
     header |= (_addr & 0x03) << 6;
     header |= (address & 0x07) << 2;
@@ -1010,7 +1010,7 @@ bool MCP3564R::read_register(uint8_t address, uint8_t* data, uint8_t len) {
 */
 bool MCP3564R::read_register(uint8_t address, uint8_t* data, uint8_t len, uint8_t* status_byte) {
     uint old_baudrate = spi_get_baudrate(_spi);
-    spi_set_baudrate(_spi, 10000000u);
+    spi_set_baudrate(_spi, 1000000u);
     uint8_t header = 0x00;
     header |= (_addr & 0x03) << 6;
     header |= (address & 0x07) << 2;
@@ -1048,7 +1048,7 @@ bool MCP3564R::read_register(uint8_t address, uint8_t* data, uint8_t len, uint8_
 */
 bool MCP3564R::write_register(uint8_t address, uint8_t* data, uint8_t len) {
     uint old_baudrate = spi_get_baudrate(_spi);
-    spi_set_baudrate(_spi, 10000000u);
+    spi_set_baudrate(_spi, 1000000u);
     uint8_t header = 0x00;
     header |= (_addr & 0x03) << 6;
     header |= (address & 0x07) << 2;
