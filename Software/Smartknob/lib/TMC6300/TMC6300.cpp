@@ -15,7 +15,11 @@
 #include "pico/stdlib.h"
 #include "TMC6300.h"
 
-#define _constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+float constrain(float amt, float low, float high) {
+    if(amt < low) return low;
+    if(amt > high) return high;
+    return amt;
+}
 
 /**
  * @brief Add the dead zone value to the requested value, clamping if above max
@@ -101,9 +105,9 @@ void TMC6300::set_enabled(bool enabled) {
  * @param v_w Voltage on W coil [0, supply_voltage]
 */
 void TMC6300::set_voltages(float v_u, float v_v, float v_w) {
-    float dc_u = _constrain(v_u / _supply_voltage, 0.0f, 1.0f);
-    float dc_v = _constrain(v_v / _supply_voltage, 0.0f, 1.0f);
-    float dc_w = _constrain(v_w / _supply_voltage, 0.0f, 1.0f);
+    float dc_u = constrain(v_u / _supply_voltage, 0.0f, 1.0f);
+    float dc_v = constrain(v_v / _supply_voltage, 0.0f, 1.0f);
+    float dc_w = constrain(v_w / _supply_voltage, 0.0f, 1.0f);
     write_duty_cycle(dc_u, dc_v, dc_w);
 }
 
