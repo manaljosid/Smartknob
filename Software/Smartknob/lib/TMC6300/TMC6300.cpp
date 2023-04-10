@@ -15,7 +15,7 @@
 #include "pico/stdlib.h"
 #include "TMC6300.h"
 
-float constrain(float amt, float low, float high) {
+template <typename T> T constrain(T amt, T low, T high) {
     if(amt < low) return low;
     if(amt > high) return high;
     return amt;
