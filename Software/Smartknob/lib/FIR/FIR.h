@@ -7,10 +7,14 @@
  */
 
 #pragma once
-#include <vector>
-#include <deque>
+#include <array>
 
-class FIR {
+/**
+ * @brief FIR class
+ * @param N Number of taps of the FIR filter - must be an odd number
+*/
+template <uint N> class FIR {
+    static_assert((N % 2) != 0, "N is not an odd number");
 public:
     FIR();
 
@@ -31,7 +35,6 @@ public:
     */
     struct FIR_params {
         Type type;
-        uint length;
         float cutoff;
         float sample_rate;
     };
@@ -41,7 +44,8 @@ public:
 private:
     const float _pi = 3.14159265358979323846f;
     FIR_params _params;
-    std::vector<float> _coeffs;
-    std::deque<float> _buffer;
-    std::vector<float> calculate_coeffs(FIR_params* params);
+    uint index = N-1;
+    std::array<float, N> _coeffs;
+    std::array<float, N> _buffer;
+    std::array<float, N> calculate_coeffs(FIR_params* params);
 };
