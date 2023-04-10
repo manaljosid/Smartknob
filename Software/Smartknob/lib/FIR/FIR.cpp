@@ -1,7 +1,7 @@
 /*
- *  Title: FOC Library
+ *  Title: FIR Library
 
- *  Description: Calculates BLDC phase voltages based on motor angles and desired torques/speeds
+ *  Description: FIR LPF or HPF filter of type 1 with Hamming window of variable length
  * 
  *  Author: Mani Magnusson
  */
