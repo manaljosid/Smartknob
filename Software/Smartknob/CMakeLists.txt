@@ -17,4 +17,4 @@ pico_add_extra_outputs(main)
 
 add_subdirectory(lib)
 
-target_link_libraries(main pico_stdlib hardware_i2c hardware_spi MT6701 MCP3564R) # Insert libraries used in here
+target_link_libraries(main pico_stdlib hardware_i2c hardware_spi MT6701 MCP3564R FOC TMC6300) # Insert libraries used in here

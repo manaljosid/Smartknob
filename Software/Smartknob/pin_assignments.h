@@ -19,12 +19,12 @@
 #define STRAIN_MOSI 11
 
 // Motor pinout
-#define UH 12
-#define UL 13
+#define WH 12
+#define WL 13
 #define VH 14
 #define VL 15
-#define WH 16
-#define WL 17
+#define UH 16
+#define UL 17
 #define DIAG 18
 
 // Magnetometer pinout

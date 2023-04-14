@@ -90,7 +90,7 @@ mt6701_err_t MT6701::read(float* angle) {
     raw_angle |= buffer[1];
     raw_angle = raw_angle & 0xFFFC; // Mask out the two lsb
     raw_angle >>= 2;
-    *angle = raw_angle/16384.0 * 360.0;
+    *angle = raw_angle * 3.14159265358979 / 8192.0;
 
     // Set baudrate to old baudrate again
     if(spi_set_baudrate(_spi, old_baudrate) != old_baudrate) {
