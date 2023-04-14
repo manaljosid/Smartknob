@@ -55,13 +55,13 @@ template <uint N> float FIR<N>::run(float input) {
 */
 template <uint N> std::array<float, N> FIR<N>::calculate_coeffs(FIR_params* params) {
     float discrete_frequency = params->cutoff * 2.0f * _pi / params->sample_rate; // rad/s
-    if(params->type == Type::HPF) discrete_frequency = _pi - discrete_frequency;
+    if(params->type == FIR_type::HPF) discrete_frequency = _pi - discrete_frequency;
     uint length = N;
     std::array<float, N> coeffs;
     for(uint n = -((length-1)/2); n <= (length-1)/2; n++) {
         if(n == 0) {
             coeffs[n + (length-1)/2] = 1.0f;
-        } else if(params->type == Type::HPF) {
+        } else if(params->type == FIR_type::HPF) {
             coeffs[n + (length-1)/2] = pow(-1.0f, float(n))*(sin(discrete_frequency * float(n)) / _pi * float(n)) * (0.54f * 0.46f * cos(2.0f * _pi * n / float(length)));
         } else {
             coeffs[n + (length-1)/2] = (sin(discrete_frequency * float(n)) / _pi * float(n)) * (0.54f * 0.46f * cos(2.0f * _pi * n / float(length)));

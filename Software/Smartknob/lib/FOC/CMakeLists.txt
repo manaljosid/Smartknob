@@ -6,4 +6,4 @@ target_sources(FOC INTERFACE
 
 target_include_directories(FOC INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(FOC INTERFACE hardware_clocks hardware_pwm hardware_gpio)
+target_link_libraries(FOC INTERFACE TMC6300 MT6701 hardware_pwm hardware_gpio)

@@ -67,23 +67,30 @@ void TMC6300::init(long frequency, float dead_zone) {
     gpio_set_function(_gpio_pins.u_l, GPIO_FUNC_PWM);
     gpio_set_function(_gpio_pins.v_l, GPIO_FUNC_PWM);
     gpio_set_function(_gpio_pins.w_l, GPIO_FUNC_PWM);
-    slices[0] = pwm_gpio_to_channel(_gpio_pins.u_h);
-    slices[1] = pwm_gpio_to_channel(_gpio_pins.v_h);
-    slices[2] = pwm_gpio_to_channel(_gpio_pins.w_h);
-    slices[3] = pwm_gpio_to_channel(_gpio_pins.u_l);
-    slices[4] = pwm_gpio_to_channel(_gpio_pins.v_l);
-    slices[5] = pwm_gpio_to_channel(_gpio_pins.w_l);
-    channels[0] = pwm_gpio_to_slice_num(_gpio_pins.u_h);
-    channels[1] = pwm_gpio_to_slice_num(_gpio_pins.v_h);
-    channels[2] = pwm_gpio_to_slice_num(_gpio_pins.w_h);
-    channels[3] = pwm_gpio_to_slice_num(_gpio_pins.u_l);
-    channels[4] = pwm_gpio_to_slice_num(_gpio_pins.v_l);
-    channels[5] = pwm_gpio_to_slice_num(_gpio_pins.w_l);
+    slices[0] = pwm_gpio_to_slice_num(_gpio_pins.u_h);
+    slices[1] = pwm_gpio_to_slice_num(_gpio_pins.v_h);
+    slices[2] = pwm_gpio_to_slice_num(_gpio_pins.w_h);
+    slices[3] = pwm_gpio_to_slice_num(_gpio_pins.u_l);
+    slices[4] = pwm_gpio_to_slice_num(_gpio_pins.v_l);
+    slices[5] = pwm_gpio_to_slice_num(_gpio_pins.w_l);
+    channels[0] = pwm_gpio_to_channel(_gpio_pins.u_h);
+    channels[1] = pwm_gpio_to_channel(_gpio_pins.v_h);
+    channels[2] = pwm_gpio_to_channel(_gpio_pins.w_h);
+    channels[3] = pwm_gpio_to_channel(_gpio_pins.u_l);
+    channels[4] = pwm_gpio_to_channel(_gpio_pins.v_l);
+    channels[5] = pwm_gpio_to_channel(_gpio_pins.w_l);
     wrapvalue = ((125L * 1000L * 1000L) / frequency) / 2L - 1L;
     for(int i = 0; i < 6; i++) {
         pwm_set_clkdiv_int_frac(slices[i], 1, 0);
         pwm_set_phase_correct(slices[i], true);
         pwm_set_wrap(slices[i], wrapvalue);
+        if(i > 2) {
+            if(channels[i] == 0) {
+                hw_write_masked(&pwm_hw->slice[slices[i]].csr, 0x1 << PWM_CH0_CSR_A_INV_LSB, PWM_CH0_CSR_A_INV_BITS);
+            } else {
+                hw_write_masked(&pwm_hw->slice[slices[i]].csr, 0x1 << PWM_CH0_CSR_B_INV_LSB, PWM_CH0_CSR_B_INV_BITS);
+            }
+        }
         pwm_set_chan_level(slices[0], channels[i], 0); // Turn off
     }
     sync_slices();
@@ -105,6 +112,9 @@ void TMC6300::set_enabled(bool enabled) {
  * @param v_w Voltage on W coil [0, supply_voltage]
 */
 void TMC6300::set_voltages(float v_u, float v_v, float v_w) {
+    v_u = constrain(v_u, 0.0f, _supply_voltage);
+    v_v = constrain(v_v, 0.0f, _supply_voltage);
+    v_w = constrain(v_w, 0.0f, _supply_voltage);
     float dc_u = constrain(v_u / _supply_voltage, 0.0f, 1.0f);
     float dc_v = constrain(v_v / _supply_voltage, 0.0f, 1.0f);
     float dc_w = constrain(v_w / _supply_voltage, 0.0f, 1.0f);
@@ -135,11 +145,11 @@ void TMC6300::sync_slices(void) {
 void TMC6300::write_duty_cycle(float dc_u, float dc_v, float dc_w) {
     if(_enabled) {
         pwm_set_chan_level(slices[0], channels[0], (wrapvalue+1) * dc_u);
-        pwm_set_chan_level(slices[1], channels[1], (wrapvalue+1) * swDti(dc_u, _dead_zone));
-        pwm_set_chan_level(slices[2], channels[2], (wrapvalue+1) * dc_u);
         pwm_set_chan_level(slices[3], channels[3], (wrapvalue+1) * swDti(dc_u, _dead_zone));
-        pwm_set_chan_level(slices[4], channels[4], (wrapvalue+1) * dc_u);
-        pwm_set_chan_level(slices[5], channels[5], (wrapvalue+1) * swDti(dc_u, _dead_zone));
+        pwm_set_chan_level(slices[1], channels[1], (wrapvalue+1) * dc_v);
+        pwm_set_chan_level(slices[4], channels[4], (wrapvalue+1) * swDti(dc_v, _dead_zone));
+        pwm_set_chan_level(slices[2], channels[2], (wrapvalue+1) * dc_w);
+        pwm_set_chan_level(slices[5], channels[5], (wrapvalue+1) * swDti(dc_w, _dead_zone));
     } else {
         for(int i = 0; i < 6; i++){
             pwm_set_chan_level(slices[i], channels[i], 0);
