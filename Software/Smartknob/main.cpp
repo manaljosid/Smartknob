@@ -19,7 +19,6 @@
 #include <FOC.h>
 #include <TMC6300.h>
 #include <PID.h>
-#include <FIR.h>
 #include "pin_assignments.h"
 
 // Defines & constants
@@ -33,7 +32,6 @@ MCP3564R mcp3564r(spi1, STRAIN_CSN);
 TMC6300 tmc6300(UH, VH, WH, UL, VL, WL, 5.0f);
 FOC foc(7, &mt6701, &tmc6300, Direction::CCW, 5.0f);
 SMARTKNOB::PID knob_pid(8.0f, 0.0f, 0.02f, 10.0f);
-FIR<5> fir;
 
 // Variables and data structures
 struct Config {
@@ -48,7 +46,6 @@ struct Config {
     float torque_limit = 2.5f;
 } config;
 
-struct FIR_params fir_params;
 struct repeating_timer timer;
 float angle = 0.0f;
 uint8_t channel = 0;
