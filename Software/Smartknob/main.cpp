@@ -32,7 +32,7 @@ MT6701 mt6701(spi1, MAG_CSN);
 MCP3564R mcp3564r(spi1, STRAIN_CSN);
 TMC6300 tmc6300(UH, VH, WH, UL, VL, WL, 5.0f);
 FOC foc(7, &mt6701, &tmc6300, Direction::CCW, 5.0f);
-SMARTKNOB::PID knob_pid(8.0f, 0.0f, 0.1f, 10.0f);
+SMARTKNOB::PID knob_pid(8.0f, 0.0f, 0.02f, 10.0f);
 FIR<5> fir;
 
 // Variables and data structures
@@ -94,6 +94,8 @@ void init() {
     // Init detents
     mt6701.read(&angle);
     config.detent_center = angle; 
+    config.max_position = 50;
+    config.min_position = 0;
 
     // Init MCP3564R
     /*
@@ -120,6 +122,7 @@ void init() {
    // Init PID
    knob_pid.errorMode = SMARTKNOB::ErrorMode::ANGULAR;
    knob_pid.derivativeMode = SMARTKNOB::DerivativeMode::DERIVATIVE_ON_ERROR_FILTERED;
+   knob_pid.setpoint = angle;
 
    // Add an interrupt timer
     add_repeating_timer_us(-1000, repeating_timer_callback, NULL, &timer);
@@ -152,13 +155,15 @@ bool repeating_timer_callback(struct repeating_timer* t) {
     knob_pid.setpoint = config.detent_center;
     float torque = knob_pid.update(-angle, 0.001f); // Set dt to 1 ms since this loop is interrupt based
     foc.update(constrain(torque, -config.torque_limit, config.torque_limit), &angle);
-    if((knob_pid.error > config.snap_radians_increase) && (config.position < config.max_position)){
+    if((knob_pid.error > config.snap_radians_increase) && (config.position > config.min_position)){
         config.detent_center = fmodf(config.detent_center - 2.0f * config.snap_radians_increase + _3pi, _2pi) - _pi;
-        config.position++;
-    }
-    if((knob_pid.error < config.snap_radians_decrease) && (config.position > config.min_position)){
-        config.detent_center = fmodf(config.detent_center - 2.0f * config.snap_radians_decrease + _3pi, _2pi) - _pi;
         config.position--;
+        printf("Gain: %d dB\n", config.position);
+    }
+    if((knob_pid.error < config.snap_radians_decrease) && (config.position < config.max_position)){
+        config.detent_center = fmodf(config.detent_center - 2.0f * config.snap_radians_decrease + _3pi, _2pi) - _pi;
+        config.position++;
+        printf("Gain: %d dB\n", config.position);
     }
     //printf("%f\n", angle);
     return true;
