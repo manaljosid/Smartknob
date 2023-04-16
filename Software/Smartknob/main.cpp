@@ -128,26 +128,9 @@ void init() {
     add_repeating_timer_us(-1000, repeating_timer_callback, NULL, &timer);
 }
 
-float error = 0.0f;
-float setpoint = _pi;
-const float Pk = 10.0f;
 void loop() {
     //mcp3564r.read_data(&measurement, &channel);
     //printf("ADC data: %d\n", measurement);
-
-    //mt6701.read(&angle);
-    //angle -= setpoint;
-    //angle = fmodf(angle + _pi, 2.0f * _pi) - _pi; // "Normalize" angle to always be between -pi and pi
-    //error = -angle; // setpoint - angle
-    //foc.update(constrain(-(error * Pk), -2.5f, 2.5f), &angle);
-    //if(error >= 2.0f * _pi / 10.0f) setpoint = fmodf(setpoint - (2.0f * _pi / 10.0f), 2.0f * _pi);
-    //if(error <= -(2.0f * _pi / 10.0f)) setpoint = fmodf(setpoint + (2.0f * _pi / 10.0f), 2.0f * _pi);
-
-    //float agnels = 0.0f;
-    //mt6701.read(&agnels);
-    //printf("%f\n", agnels);
-    //
-    //sleep_ms(10);
 }
 
 bool repeating_timer_callback(struct repeating_timer* t) {
