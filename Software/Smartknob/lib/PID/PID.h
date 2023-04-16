@@ -3,7 +3,7 @@
 
  *  Description: A library implementing a PID control system
  * 
- *  Author: Jordan (Perry)
+ *  Author: Jordan (Perry) and Mani Magnusson
  */
 
 #pragma once

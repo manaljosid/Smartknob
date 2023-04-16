@@ -3,7 +3,7 @@
 
  *  Description: FIR LPF or HPF filter of type 1 with Hamming window of variable length
  * 
- *  Author: Jordan (Perry)
+ *  Author: Jordan (Perry) and Mani Magnusson
  */
 
 #include <string.h>
