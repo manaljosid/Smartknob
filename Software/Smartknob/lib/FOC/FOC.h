@@ -21,9 +21,9 @@ enum Direction : int8_t {
 class FOC {
 public:
     FOC(int pole_pairs, MT6701* encoder,TMC6300* motor, Direction direction, float voltage_limit);
-    void init(bool type);
+    void init(bool type, bool skip_zea_check);
 
-    void update(float requested_voltage);
+    void update(float requested_voltage, float* encoder_angle);
 
     void set_phase_voltage(float v_q, float v_d, float angle);
 

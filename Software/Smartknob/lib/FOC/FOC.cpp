@@ -36,13 +36,15 @@ FOC::FOC(int pole_pairs, MT6701* encoder,TMC6300* motor, Direction direction, fl
  * @brief Initialize the FOC library
  * @param type True for SVM, false for sine
 */
-void FOC::init(bool type) {
-    set_phase_voltage(3.0f, 0.0f, _3pi_2);
-    sleep_ms(500);
-    float encoder_angle = 0.0f;
-    _encoder->read(&encoder_angle);
-    _zero_electric_angle = 0.0f;
-    _zero_electric_angle = electric_angle(encoder_angle);
+void FOC::init(bool type, bool skip_zea_check) {
+    if(!skip_zea_check) {
+        set_phase_voltage(3.0f, 0.0f, _3pi_2);
+        sleep_ms(500);
+        float encoder_angle = 0.0f;
+        _encoder->read(&encoder_angle);
+        _zero_electric_angle = 0.0f;
+        _zero_electric_angle = electric_angle(encoder_angle);
+    }
     set_phase_voltage(0, 0, 0);
     _type = type;
 }
@@ -121,10 +123,10 @@ void FOC::set_phase_voltage(float v_q, float v_d, float angle) {
     _motor->set_voltages(v_u, v_v, v_w);
 }
 
-void FOC::update(float requested_voltage) {
-    float encoder_angle = 0.0f;
-    _encoder->read(&encoder_angle);
-    set_phase_voltage(requested_voltage, 0.0f, electric_angle(encoder_angle));
+void FOC::update(float requested_voltage, float* encoder_angle) {
+    //float encoder_angle = 0.0f;
+    //_encoder->read(&encoder_angle);
+    set_phase_voltage(requested_voltage, 0.0f, electric_angle(*encoder_angle));
 }
 
 void FOC::set_angle(float voltage, float angle) {
@@ -139,7 +141,7 @@ void FOC::set_angle(float voltage, float angle) {
  * @return Normalized output angle
 */
 float FOC::normalize_angle(float angle) {
-    float a = fmod(angle, _2pi);
+    float a = fmodf(angle, _2pi);
     return a >= 0.0f ? a : (a + _2pi);
 }
 
