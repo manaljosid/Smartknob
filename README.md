@@ -10,7 +10,7 @@ A couple changes are implemented including:
 The project uses Altium Designer for schematic and PCB design, Autodesk Fusion 360 for mechanical design and the Pico SDK for software development.
 
 ## Heads-up!
-This repository is under heavy development. No guarantee is made that anything in it will work. Currently all changes are committed directly to the main branch and as such the main branch will mostly contain known bugs.
+This repository is under heavy development. No guarantee is made that anything in it will work.
 
 ## TODO
 - Add submodule fetching instructions
