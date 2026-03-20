@@ -19,6 +19,7 @@
 #include <FOC.h>
 #include <TMC6300.h>
 #include <PID.h>
+#include <lvgl.h>
 #include "pin_assignments.h"
 
 // Defines & constants
@@ -29,9 +30,9 @@ const float _2pi = 6.28318530717f;
 // Constructors
 MT6701 mt6701(spi1, MAG_CSN);
 MCP3564R mcp3564r(spi1, STRAIN_CSN);
-TMC6300 tmc6300(UH, VH, WH, UL, VL, WL, 5.0f);
-FOC foc(7, &mt6701, &tmc6300, Direction::CCW, 5.0f);
-SMARTKNOB::PID knob_pid(8.0f, 0.0f, 0.02f, 10.0f);
+TMC6300 tmc6300(UH, VH, WH, UL, VL, WL, 5.0f); // 5V max voltage
+FOC foc(7, &mt6701, &tmc6300, Direction::CCW, 5.0f); // 7 pole pairs and max voltage is 5V
+SMARTKNOB::PID knob_pid(6.0f, 0.0f, 0.5f, 16.0f); // P, I and D gains along with the N to use for derivative filtering
 
 // Variables and data structures
 struct Config {
@@ -84,15 +85,19 @@ void init() {
     tmc6300.set_enabled(true);
 
     // Init FOC
-    foc.init(false, true); // Set to sine mode
-    foc._zero_electric_angle = 4.062365f;
+    foc.init(false, false); // Set to sine mode
+    //foc._zero_electric_angle = 4.062365f;
     printf("Zero Electric Angle: %f\n", foc._zero_electric_angle);
 
     // Init detents
+    foc.set_phase_voltage(2.5f, 0.0f, 0.0f);
+    sleep_ms(100);
     mt6701.read(&angle);
     config.detent_center = angle; 
-    config.max_position = 50;
-    config.min_position = 0;
+    //config.max_position = 4;
+    //config.min_position = 0;
+    config.snap_radians_decrease = -_pi/32.0f;
+    config.snap_radians_increase = _pi/32.0f;
 
     // Init MCP3564R
     /*

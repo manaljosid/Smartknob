@@ -34,7 +34,7 @@ struct FIR_params {
  * @brief FIR class
  * @param N Number of taps of the FIR filter - must be an odd number
 */
-template <uint N> class FIR {
+template <unsigned int N> class FIR {
     static_assert((N % 2) != 0, "N is not an odd number");
 public:
     FIR() {};
