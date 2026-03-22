@@ -1,1 +1,16 @@
-History/
+*.PrjPCBStructure
+*.SchDocPreview
+*.PcbDocPreview
+__Previews
+*.REP
+*.TLT
+*.LOG
+*.SchDog.Zip
+
+# Useless directories
+Electronics\Smartknob\ Outputs
+Electronics\Smartknob\ Logs
+Project Outputs for*
+
+# History
+History
