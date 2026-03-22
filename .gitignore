@@ -5,7 +5,10 @@ __Previews
 *.REP
 *.TLT
 *.LOG
-*.SchDog.Zip
+*.SchDoc.Zip
+*.PrjPcb.Zip
+*.PcbDoc.Zip
+
 
 # Useless directories
 Electronics\Smartknob\ Outputs
